@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>测试画布</title>
+    <style type="text/css">
+        .cvs{
+            width: 80%;
+            height: 600px;
+        }
+
+    </style>
+</head>
+<body>
+
+<canvas id="cvs" class="cvs"></canvas>
+
+<script type="text/javascript">
+    window.onload = function(){
+        var cvs = document.getElementById('cvs');
+        var ctx = cvs.getContext('2d');
+        // 兼容处理
+        if( !window.requestAnimationFrame){
+            window.requestAnimationFrame = function(fn){
+                setTimeout(fn,17);
+            }
+        }
+        //球
+        var Ball = function(){
+            //球的横坐标
+            this.x = Math.random() * cvs.width;
+            this.y = this.x + 5;
+            //颜色
+            this.color = '#' + (Math.random()*0xffffff<<0).toString(16);
+            // 半径
+            // 移动距离
+            this.moveX = Math.random() * 2;
+            this.r = Math.random() * 10;
+            this.draw = function(){
+                //画出圆
+
+                ctx.beginPath();
+
+                ctx.fillStyle = this.color;
+
+                ctx.arc(this.x,this.y,this.r,0,2*Math.PI);
+                ctx.closePath();
+
+                ctx.fill();
+            }
+        }
+        // 变量
+        var store = {};
+        for(let i = 0;i < 30;i++){
+            store[i] = new Ball();
+        }
+        var draw = function(){
+            for(var index in store){
+                store[index].x += store[index].moveX;
+                if(store[index].x > cvs.width){
+                    store[index].x = -2 * store[index].r;
+
+                }
+                store[index].draw();
+            }
+        }
+              
+     
+        
+
+        var render = function(){
+            // 清除画布
+            ctx.clearRect(0,0,cvs.width,cvs.height);
+            ctx.fillStyle = '#000000';
+            ctx.fillRect(0,0,cvs.width,cvs.height);
+            //渲染东西
+            draw();
+
+
+            // 循环渲染
+            requestAnimationFrame(render);
+
+        }
+        render();
+
+
+
+
+
+    }
+
+</script>
+</body>
+</html>
